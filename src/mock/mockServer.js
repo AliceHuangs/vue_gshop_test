@@ -11,4 +11,4 @@ Mock.mock('/ratings', {code: 0, data: data.ratings})
 // 提供 info数据接口
 Mock.mock('/info', {code: 0, data: data.info})
 
-// export default ???     不需要暴露什么, 只需要执行一次
+// export default    不需要暴露,只需要执行一次就可以
