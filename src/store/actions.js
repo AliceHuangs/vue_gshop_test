@@ -6,7 +6,9 @@ import {
   RESET_USER,
   RECEIVE_INFO,
   RECEIVE_RATINGS,
-  RECEIVE_GOODS
+  RECEIVE_GOODS,
+  INCREMENT_FOOD_COUNT,
+  DECREMENT_FOOD_COUNT
 } from './mutation-types'
 import {
   reqAddress,
@@ -16,7 +18,8 @@ import {
   reqLogout,
   reqRatings,
   reqGoods,
-  reqInfo
+  reqInfo,
+
 } from '../api'
 
 
@@ -91,13 +94,16 @@ export default {
     }
   },
 
+
+
   // 异步获取评价列表
-  async getRatings ({commit, state}) {
+  async getRatings ({commit, state}, cb) {//
     // 调用接口请求函数从后台获取数据
-    const result = await reqRatings();
+    const result = await reqRatings()
     if(result.code===0) {
-      const ratings = result.data;
+      const ratings = result.data
       commit(RECEIVE_RATINGS, {ratings})
+      cb && cb()
     }
   },
 
@@ -110,5 +116,15 @@ export default {
       commit(RECEIVE_INFO, {info})
     }
   },
+
+  //同步更新指定的food的count得值
+  updateFoodCount ({commit}, {food,isAdd}){
+    if(isAdd){
+      commit(INCREMENT_FOOD_COUNT,{food})
+    }else{
+      commit(DECREMENT_FOOD_COUNT,{food})
+
+    }
+  }
 
 }

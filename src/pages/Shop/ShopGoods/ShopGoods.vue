@@ -2,7 +2,7 @@
   <div>
     <div class="goods">
       <div class="menu-wrapper">
-        <ul>
+        <ul ref="menuUl">
           <!--current-->
           <li class="menu-item" v-for="(good, index) in goods" :key="index"
               :class="{current: index===currentIndex}" @click="clickItem(index)">
@@ -18,7 +18,8 @@
           <li class="food-list-hook" v-for="(good, index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
             <ul>
-              <li class="food-item bottom-border-1px" v-for="(food, index) in good.foods" :key="index">
+              <li class="food-item bottom-border-1px" v-for="(food, index) in good.foods"
+                  :key="index" @click="showFood(food)">
                 <div class="icon">
                   <img width="57" height="57" :src="food.icon">
                 </div>
@@ -33,7 +34,7 @@
                     <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    CartControl组件
+                    <CartControl :food="food"/>
                   </div>
                 </div>
               </li>
@@ -41,18 +42,26 @@
           </li>
         </ul>
       </div>
+      <!--3.10引入ShopCart组件-->
+      <ShopCart/>
     </div>
+    <Food :food="food" ref="food"/>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll'
   import {mapState} from 'vuex'
+
+  import CartControl from '../../../components/CartControl/CartControl.vue'//3.11
+  import Food from '../../../components/Food/Food.vue'
+  import ShopCart from '../../../components/ShopCart/ShopCart';
   export default {
     data () {
       return {
         scrollY: 0, // 右列表滚动y坐标
         tops: [], // 右所有分类li的top数组
+        food:{},//显示当前那发的food
       }
     },
 
@@ -126,8 +135,23 @@
         this.scrollY = top;
         // 右侧列表滚动top处
         this.rightScroll.scrollTo(0, -top, 300);
-      }
-    }
+      },
+      showFood(food){//切换图片的显示和隐藏
+        //1.更新food数据状态
+        this.food = food;
+
+        //2.显示food组件（这里通过父组件调用子组件的方法来实现的）
+        this.$refs.food.toggleShow();
+
+      },
+
+
+    },
+    components: {
+      CartControl,//3.12
+      Food,
+      ShopCart,
+    },
   }
 </script>
 
